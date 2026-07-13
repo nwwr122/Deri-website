@@ -36,9 +36,12 @@ function renderProfilePage() {
   const idx = list.findIndex(b => b.id === biz.id);
   const num = String(idx + 1).padStart(3, '0');
 
+  const mapLinks = buildMapLinks(biz.mapLocation);
+
   container.innerHTML = `
     <div class="profile-card">
       <span class="badge">No. ${num}</span>
+      ${businessAvatarHtml(biz, name).replace('plaque-avatar', 'plaque-avatar profile-avatar')}
       <span class="cat-tag">${catLabel(biz.category)}</span>
       <h1 class="profile-name">${escapeHtml(name)}</h1>
       <div class="neigh">📍 ${escapeHtml(biz.neighborhood)}</div>
@@ -48,6 +51,17 @@ function renderProfilePage() {
         ${waLink ? `<a class="whatsapp" href="${waLink}" target="_blank" rel="noopener">${t('whatsapp')}</a>` : ''}
         ${social ? `<a class="social" href="${social}" target="_blank" rel="noopener">${t('social')}</a>` : ''}
       </div>
+      ${mapLinks ? `
+        <div class="profile-actions">
+          <a class="call" href="${mapLinks.viewUrl}" target="_blank" rel="noopener">📍 View on Maps</a>
+          ${mapLinks.directionsUrl ? `<a class="whatsapp" href="${mapLinks.directionsUrl}" target="_blank" rel="noopener">🧭 Get Directions</a>` : ''}
+        </div>
+        ${mapLinks.embedUrl ? `
+          <div class="profile-map">
+            <iframe src="${mapLinks.embedUrl}" width="100%" height="220" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        ` : ''}
+      ` : ''}
       <div class="scans">📶 ${biz.scans || 0} ${t('scans')}</div>
     </div>
   `;

@@ -51,6 +51,7 @@ function renderShowcaseGrid() {
     return `
       <article class="plaque profile-plaque" onclick="location.href='profile.html?id=${b.id}'">
         <span class="badge">No. ${num}</span>
+        ${businessAvatarHtml(b, name)}
         <span class="cat-tag">${catLabel(b.category)}</span>
         <h3>${escapeHtml(name)}</h3>
         <div class="neigh">📍 ${escapeHtml(b.neighborhood)}</div>

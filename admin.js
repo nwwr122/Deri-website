@@ -113,6 +113,8 @@ function editBusiness(id) {
   document.getElementById('whatsappInput').value = b.whatsapp;
   document.getElementById('instagramInput').value = b.instagram;
   document.getElementById('facebookInput').value = b.facebook;
+  document.getElementById('imageUrlInput').value = b.imageUrl || '';
+  document.getElementById('mapLocationInput').value = b.mapLocation || '';
   document.getElementById('scansInput').value = b.scans || 0;
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -134,6 +136,8 @@ async function submitBizForm(e) {
     whatsapp: document.getElementById('whatsappInput').value.trim(),
     instagram: document.getElementById('instagramInput').value.trim(),
     facebook: document.getElementById('facebookInput').value.trim(),
+    imageUrl: document.getElementById('imageUrlInput').value.trim(),
+    mapLocation: document.getElementById('mapLocationInput').value.trim(),
     scans: parseInt(document.getElementById('scansInput').value, 10) || 0,
     name: {
       en: document.getElementById('name_en').value.trim(),

@@ -26,6 +26,8 @@ function rowToBusiness(row) {
     instagram: row.instagram || '',
     facebook: row.facebook || '',
     scans: row.scans || 0,
+    imageUrl: row.image_url || '',
+    mapLocation: row.map_location || '',
     name: { en: row.name_en || '', ku: row.name_ku || '', ar: row.name_ar || '' },
     desc: { en: row.desc_en || '', ku: row.desc_ku || '', ar: row.desc_ar || '' }
   };
@@ -41,6 +43,8 @@ function businessToRow(b) {
     instagram: b.instagram,
     facebook: b.facebook,
     scans: b.scans,
+    image_url: b.imageUrl,
+    map_location: b.mapLocation,
     name_en: b.name.en,
     name_ku: b.name.ku,
     name_ar: b.name.ar,
@@ -228,6 +232,7 @@ function renderBusinessGrid() {
     return `
       <article class="plaque" onclick="location.href='profile.html?id=${b.id}'">
         <span class="badge">No. ${num}</span>
+        ${businessAvatarHtml(b, name)}
         <span class="cat-tag">${catLabel(b.category)}</span>
         <h3>${escapeHtml(name)}</h3>
         <div class="neigh">📍 ${escapeHtml(b.neighborhood)}</div>
@@ -264,6 +269,70 @@ function renderPublicPage() {
   renderStaticStrings();
   renderCategoryStrip();
   renderBusinessGrid();
+}
+
+// Tries to pull "lat,lng" out of a pasted Google Maps URL, in whatever
+// format Google happens to be using (varies by how the link was copied).
+// Returns null if it can't find coordinates — the caller falls back to
+// treating the raw text as a place name/address instead.
+function extractLatLng(raw) {
+  if (!raw) return null;
+  const patterns = [
+    /!3d(-?\d{1,3}\.\d+)!4d(-?\d{1,3}\.\d+)/,         // precise place-marker coords — check this FIRST
+    /[?&]q=(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/,        // ?q=36.86,42.98
+    /[?&]ll=(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/,       // ?ll=36.86,42.98
+    /^\s*(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)\s*$/,  // plain "lat,lng" typed directly
+    /@(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/              // map-viewport-center coords — least precise, check LAST
+  ];
+  for (const re of patterns) {
+    const m = raw.match(re);
+    if (m) return `${m[1]},${m[2]}`;
+  }
+  return null;
+}
+
+// Builds all three map-related URLs from whatever the admin pasted:
+// coordinates, a full (non-shortened) Google Maps link, or a plain address.
+// - embedUrl: for the visual iframe preview (can be blocked by some
+//   browser extensions/ad-blockers — not reliable on its own)
+// - viewUrl / directionsUrl: plain links that open Google Maps in a new
+//   tab — these work everywhere, no embedding involved, so they're the
+//   dependable fallback if the preview above them doesn't render.
+function buildMapLinks(rawLocation) {
+  if (!rawLocation) return null;
+  const trimmed = rawLocation.trim();
+  const isUrl = /^https?:\/\//i.test(trimmed);
+  const coords = extractLatLng(trimmed);
+
+  // "View on Maps": prefer opening the pasted link exactly as-is, so the
+  // full business profile (reviews, hours, photos) shows — not just a pin.
+  const viewUrl = isUrl
+    ? trimmed
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`;
+
+  // The embed preview and "Get Directions" need an actual coordinate or a
+  // plain address/name to work — a raw link (especially a shortened one
+  // with no coordinates inside it) isn't usable as a search query for
+  // these, so skip them gracefully rather than showing something broken.
+  const searchableQuery = coords || (!isUrl ? trimmed : null);
+  const embedUrl = searchableQuery
+    ? `https://www.google.com/maps?q=${encodeURIComponent(searchableQuery)}&output=embed`
+    : null;
+  const directionsUrl = searchableQuery
+    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(searchableQuery)}`
+    : null;
+
+  return { viewUrl, embedUrl, directionsUrl };
+}
+
+// Renders a business's photo if it has one, otherwise a letter-avatar
+// fallback so cards without a photo yet still look intentional.
+function businessAvatarHtml(business, displayName) {
+  if (business.imageUrl) {
+    return `<img class="plaque-avatar" src="${escapeHtml(business.imageUrl)}" alt="${escapeHtml(displayName)}" onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'plaque-avatar plaque-avatar-fallback', textContent:'${escapeHtml((displayName || '?').charAt(0).toUpperCase())}'}))">`;
+  }
+  const letter = (displayName || '?').charAt(0).toUpperCase();
+  return `<div class="plaque-avatar plaque-avatar-fallback">${escapeHtml(letter)}</div>`;
 }
 
 function escapeHtml(str) {
