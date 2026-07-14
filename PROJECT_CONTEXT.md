@@ -159,6 +159,45 @@ Follow this every time, to avoid lost context or broken deploys:
 
 *Newest entries at the top.*
 
+### [7/14/2026]
+**What changed:** Three usability improvements bundled together:
+1. **Admin save/delete feedback** — a small toast notification ("✓ Business added." /
+   "✓ Business updated." / "Business deleted.") now appears briefly after every admin action,
+   so it's clear something actually happened, instead of the form just silently clearing.
+2. **Icons on action buttons** — Call, WhatsApp, Instagram, Facebook, View on Maps, and Get
+   Directions buttons now show a small icon alongside their text everywhere they appear
+   (directory cards, showcase cards, profile page). Instagram and Facebook are now shown as
+   two separate buttons when both are set, instead of one generic "Social" link picking
+   whichever was set first.
+3. **Area filter redesigned to be visually distinct from Category** — the Duhok/Shexan/All
+   Areas toggle is now a labeled, indigo-colored segmented control ("Area"), clearly different
+   in shape and color from the rust-colored Category pills below it (also now labeled
+   "Category"), so the two can't be confused for each other at a glance.
+**Why:** Feedback came directly from testing: no confirmation after saving in admin, text-only
+buttons were slower to scan than icons would be, and the two filter rows looked too similar to
+tell apart.
+**Files touched:** `admin.html`/`admin.js` (toast), `app.js` (`ICONS` object, `city-pill` class,
+filter labels/translations, directory card buttons), `showcase.js`/`profile.js` (icon buttons,
+split Instagram/Facebook), `index.html` (labeled filter groups), `style.css` (toast, icon
+alignment, segmented-control area toggle styling).
+
+### [7/14/2026]
+**What changed:** Added an area toggle — Duhok / Shexan / All Areas — to the main directory
+page (`index.html`), styled the same as the existing category pills, filtering the business
+grid alongside search and category. New `city` column on `businesses` (defaults to `duhok`).
+New required "City / Area" dropdown in the admin form. Neighborhood text on every card and the
+profile page now shows alongside its city (e.g. "Nwroz, Duhok") for context. The toggle itself
+was deliberately **not** added to `showcase.html`, keeping that page a pure, unfiltered gallery
+as originally decided.
+**Why:** The founder operates leaflet distribution personally in Shexan (a town) alongside the
+larger city of Duhok, and wanted people to be able to narrow the directory to just the area
+relevant to them.
+**Files touched:** `sql/schema.sql` (reference copy; live DB updated via a one-off `alter table`
+in Supabase SQL Editor), `app.js` (`CITIES` array, `cityLabel()`, `activeCity` filter state,
+`renderCityStrip()`, row↔business mapping, card display), `showcase.js` / `profile.js` (city
+shown next to neighborhood, no filtering added), `index.html` (new `#cityStrip` element),
+`admin.html` (new City/Area select, admin table column), `admin.js` (populate/read/write city).
+
 ### [7/13/2026]
 **What changed:** "View on Maps" now opens the exact pasted Google Maps link as-is (when a link
 was pasted), instead of rebuilding a bare-pin link from extracted coordinates. This means it now

@@ -176,11 +176,48 @@ select:focus-visible {
 
 /* category signpost strip */
 
+.filter-group {
+  margin-top: 18px;
+}
+
+.filter-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.city-toggle {
+  display: inline-flex;
+  background: var(--bg-raised);
+  border: 1.5px solid var(--indigo);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.city-toggle .city-pill {
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--indigo);
+}
+
+.city-toggle .city-pill.active {
+  background: var(--indigo);
+  color: #fff;
+}
+
 .category-strip {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 18px;
 }
 
 .cat-pill {
@@ -334,6 +371,9 @@ body[dir="rtl"] .plaque h3 { font-family: var(--font-ar-display); font-size: 24p
   padding: 7px 11px;
   border-radius: 7px;
   border: 1.5px solid var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .actions a.whatsapp { background: var(--sage); border-color: var(--sage); color: #fff; }
@@ -442,6 +482,9 @@ body[dir="rtl"] .profile-card h1.profile-name { font-family: var(--font-ar-displ
   padding: 11px 18px;
   border-radius: 8px;
   border: 1.5px solid var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 
 .profile-actions a.whatsapp { background: var(--sage); border-color: var(--sage); color: #fff; }
@@ -471,6 +514,35 @@ body[dir="rtl"] .profile-card h1.profile-name { font-family: var(--font-ar-displ
   padding: 60px 20px;
   color: var(--ink-soft);
 }
+
+.admin-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--sage);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.admin-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.admin-toast.error {
+  background: var(--rust);
+}
+
+body[dir="rtl"] .admin-toast { right: auto; left: 20px; }
 
 /* ---------------- admin page ---------------- */
 

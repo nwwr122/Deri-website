@@ -28,6 +28,7 @@ function rowToBusiness(row) {
     scans: row.scans || 0,
     imageUrl: row.image_url || '',
     mapLocation: row.map_location || '',
+    city: row.city || 'duhok',
     name: { en: row.name_en || '', ku: row.name_ku || '', ar: row.name_ar || '' },
     desc: { en: row.desc_en || '', ku: row.desc_ku || '', ar: row.desc_ar || '' }
   };
@@ -45,6 +46,7 @@ function businessToRow(b) {
     scans: b.scans,
     image_url: b.imageUrl,
     map_location: b.mapLocation,
+    city: b.city,
     name_en: b.name.en,
     name_ku: b.name.ku,
     name_ar: b.name.ar,
@@ -119,6 +121,12 @@ const CATEGORIES = [
   { id: 'other', en: 'Other', ku: 'Yên din', ar: 'أخرى' }
 ];
 
+const CITIES = [
+  { id: 'all', en: 'All Areas', ku: 'Hemû Herêm', ar: 'كل المناطق' },
+  { id: 'duhok', en: 'Duhok', ku: 'Duhok', ar: 'دهوك' },
+  { id: 'shexan', en: 'Shexan', ku: 'Şêxan', ar: 'الشيخان' }
+];
+
 const STRINGS = {
   en: {
     tagline: 'Local businesses, found at your door',
@@ -130,6 +138,7 @@ const STRINGS = {
     call: 'Call', whatsapp: 'WhatsApp', social: 'Social',
     scans: 'leaflet scans this month',
     admin: 'Admin',
+    areaFilterLabel: 'Area', categoryFilterLabel: 'Category',
     footer: 'DERÎ — a directory built from doorstep leaflets.'
   },
   ku: {
@@ -142,6 +151,7 @@ const STRINGS = {
     call: 'Telefon', whatsapp: 'WhatsApp', social: 'Medya',
     scans: 'skanên belavokê vê mehê',
     admin: 'Admîn',
+    areaFilterLabel: 'Herêm', categoryFilterLabel: 'Kategorî',
     footer: 'DERÎ — pêrista ku ji belavokên deriyan pêk hatiye.'
   },
   ar: {
@@ -154,6 +164,7 @@ const STRINGS = {
     call: 'اتصال', whatsapp: 'واتساب', social: 'التواصل',
     scans: 'مسح للمنشور هذا الشهر',
     admin: 'الإدارة',
+    areaFilterLabel: 'المنطقة', categoryFilterLabel: 'الفئة',
     footer: 'DERÎ — دليل مبني من منشورات الأبواب.'
   }
 };
@@ -180,7 +191,13 @@ function catLabel(catId) {
   return c[currentLang] || c.en;
 }
 
+function cityLabel(cityId) {
+  const c = CITIES.find(c => c.id === cityId);
+  return c ? (c[currentLang] || c.en) : cityId;
+}
+
 let activeCategory = 'all';
+let activeCity = 'all';
 let searchQuery = '';
 
 function renderCategoryStrip() {
@@ -196,12 +213,25 @@ function renderCategoryStrip() {
   });
 }
 
+function renderCityStrip() {
+  const strip = document.getElementById('cityStrip');
+  if (!strip) return;
+  strip.innerHTML = '';
+  CITIES.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'city-pill' + (activeCity === c.id ? ' active' : '');
+    btn.textContent = c[currentLang] || c.en;
+    btn.onclick = () => { activeCity = c.id; renderPublicPage(); };
+    strip.appendChild(btn);
+  });
+}
+
 function matchesSearch(biz, q) {
   if (!q) return true;
   q = q.toLowerCase();
   const haystack = [
     biz.name.en, biz.name.ku, biz.name.ar,
-    biz.neighborhood, catLabel(biz.category)
+    biz.neighborhood, catLabel(biz.category), cityLabel(biz.city)
   ].join(' ').toLowerCase();
   return haystack.includes(q);
 }
@@ -213,6 +243,7 @@ function renderBusinessGrid() {
   const all = STORE.getCached();
   const filtered = all.filter(b =>
     (activeCategory === 'all' || b.category === activeCategory) &&
+    (activeCity === 'all' || b.city === activeCity) &&
     matchesSearch(b, searchQuery)
   );
 
@@ -228,19 +259,19 @@ function renderBusinessGrid() {
     const desc = b.desc[currentLang] || b.desc.en;
     const num = String(i + 1).padStart(3, '0');
     const waLink = b.whatsapp ? `https://wa.me/${b.whatsapp.replace(/[^0-9]/g, '')}` : null;
-    const social = b.instagram || b.facebook;
     return `
       <article class="plaque" onclick="location.href='profile.html?id=${b.id}'">
         <span class="badge">No. ${num}</span>
         ${businessAvatarHtml(b, name)}
         <span class="cat-tag">${catLabel(b.category)}</span>
         <h3>${escapeHtml(name)}</h3>
-        <div class="neigh">📍 ${escapeHtml(b.neighborhood)}</div>
+        <div class="neigh">📍 ${escapeHtml(b.neighborhood)}${b.neighborhood ? ', ' : ''}${escapeHtml(cityLabel(b.city))}</div>
         <p class="desc">${escapeHtml(desc)}</p>
         <div class="actions">
-          ${b.phone ? `<a class="call" href="tel:${b.phone}" onclick="event.stopPropagation()">${t('call')}</a>` : ''}
-          ${waLink ? `<a class="whatsapp" href="${waLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${t('whatsapp')}</a>` : ''}
-          ${social ? `<a class="social" href="${social}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${t('social')}</a>` : ''}
+          ${b.phone ? `<a class="call" href="tel:${b.phone}" onclick="event.stopPropagation()">${ICONS.phone}${t('call')}</a>` : ''}
+          ${waLink ? `<a class="whatsapp" href="${waLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.whatsapp}${t('whatsapp')}</a>` : ''}
+          ${b.instagram ? `<a class="social" href="${b.instagram}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.instagram}Instagram</a>` : ''}
+          ${b.facebook ? `<a class="social" href="${b.facebook}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.facebook}Facebook</a>` : ''}
         </div>
         <div class="scans">📶 ${b.scans || 0} ${t('scans')}</div>
       </article>
@@ -254,7 +285,9 @@ function renderStaticStrings() {
     heroTitle: '[data-i18n="heroTitle"]',
     heroSub: '[data-i18n="heroSub"]',
     admin: '[data-i18n="admin"]',
-    footer: '[data-i18n="footer"]'
+    footer: '[data-i18n="footer"]',
+    areaFilterLabel: '[data-i18n="areaFilterLabel"]',
+    categoryFilterLabel: '[data-i18n="categoryFilterLabel"]'
   };
   Object.entries(map).forEach(([key, sel]) => {
     const el = document.querySelector(sel);
@@ -268,6 +301,7 @@ function renderPublicPage() {
   if (!document.getElementById('bizGrid')) return;
   renderStaticStrings();
   renderCategoryStrip();
+  renderCityStrip();
   renderBusinessGrid();
 }
 
@@ -327,6 +361,17 @@ function buildMapLinks(rawLocation) {
 
 // Renders a business's photo if it has one, otherwise a letter-avatar
 // fallback so cards without a photo yet still look intentional.
+// Small inline icons (generic line-icon style, not brand logos) used
+// alongside button text so actions are recognizable at a glance.
+const ICONS = {
+  phone: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>',
+  facebook: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  directions: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>'
+};
+
 function businessAvatarHtml(business, displayName) {
   if (business.imageUrl) {
     return `<img class="plaque-avatar" src="${escapeHtml(business.imageUrl)}" alt="${escapeHtml(displayName)}" onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'plaque-avatar plaque-avatar-fallback', textContent:'${escapeHtml((displayName || '?').charAt(0).toUpperCase())}'}))">`;

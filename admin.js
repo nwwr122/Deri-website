@@ -16,6 +16,17 @@
 
 let editingId = null;
 let formLang = 'en';
+let toastTimer = null;
+
+function showToast(message, isError) {
+  const toast = document.getElementById('adminToast');
+  if (!toast) return;
+  clearTimeout(toastTimer);
+  toast.textContent = message;
+  toast.classList.toggle('error', !!isError);
+  toast.classList.add('show');
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
 
 async function checkLogin() {
   const { data } = await sb.auth.getSession();
@@ -46,6 +57,7 @@ async function showAdminPanel() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminPanel').style.display = 'block';
   populateCategorySelect();
+  populateCitySelect();
   await STORE.fetchAll();
   renderAdminTable();
 }
@@ -54,6 +66,13 @@ function populateCategorySelect() {
   const sel = document.getElementById('categorySelect');
   sel.innerHTML = CATEGORIES.filter(c => c.id !== 'all')
     .map(c => `<option value="${c.id}">${c.en} / ${c.ku} / ${c.ar}</option>`)
+    .join('');
+}
+
+function populateCitySelect() {
+  const sel = document.getElementById('citySelect');
+  sel.innerHTML = CITIES.filter(c => c.id !== 'all')
+    .map(c => `<option value="${c.id}">${c.en}</option>`)
     .join('');
 }
 
@@ -74,6 +93,7 @@ function renderAdminTable() {
   tbody.innerHTML = list.map(b => `
     <tr>
       <td>${escapeHtml(b.name.en || b.name.ku || b.name.ar)}</td>
+      <td>${cityLabel(b.city)}</td>
       <td>${catLabel(b.category)}</td>
       <td>${escapeHtml(b.neighborhood)}</td>
       <td>${b.scans || 0}</td>
@@ -107,6 +127,7 @@ function editBusiness(id) {
   document.getElementById('desc_en').value = b.desc.en || '';
   document.getElementById('desc_ku').value = b.desc.ku || '';
   document.getElementById('desc_ar').value = b.desc.ar || '';
+  document.getElementById('citySelect').value = b.city || 'duhok';
   document.getElementById('categorySelect').value = b.category;
   document.getElementById('neighborhoodInput').value = b.neighborhood;
   document.getElementById('phoneInput').value = b.phone;
@@ -123,13 +144,19 @@ function editBusiness(id) {
 async function deleteBusiness(id) {
   if (!confirm('Delete this business listing? This cannot be undone.')) return;
   const ok = await STORE.remove(id);
-  if (ok) renderAdminTable();
+  if (ok) {
+    renderAdminTable();
+    showToast('Business deleted.');
+  } else {
+    showToast('Delete failed — check the console for details.', true);
+  }
 }
 
 async function submitBizForm(e) {
   e.preventDefault();
 
   const record = {
+    city: document.getElementById('citySelect').value,
     category: document.getElementById('categorySelect').value,
     neighborhood: document.getElementById('neighborhoodInput').value.trim(),
     phone: document.getElementById('phoneInput').value.trim(),
@@ -156,17 +183,19 @@ async function submitBizForm(e) {
     return;
   }
 
+  const wasEditing = !!editingId;
   const ok = editingId
     ? await STORE.update(editingId, record)
     : await STORE.insert(record);
 
   if (!ok) {
-    alert('Something went wrong saving this business — check the browser console for details.');
+    showToast('Something went wrong saving — check the console for details.', true);
     return;
   }
 
   clearForm();
   renderAdminTable();
+  showToast(wasEditing ? '✓ Business updated.' : '✓ Business added.');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

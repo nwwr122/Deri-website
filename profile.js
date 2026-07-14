@@ -32,7 +32,6 @@ function renderProfilePage() {
   const name = biz.name[currentLang] || biz.name.en;
   const desc = biz.desc[currentLang] || biz.desc.en;
   const waLink = biz.whatsapp ? `https://wa.me/${biz.whatsapp.replace(/[^0-9]/g, '')}` : null;
-  const social = biz.instagram || biz.facebook;
   const idx = list.findIndex(b => b.id === biz.id);
   const num = String(idx + 1).padStart(3, '0');
 
@@ -44,17 +43,18 @@ function renderProfilePage() {
       ${businessAvatarHtml(biz, name).replace('plaque-avatar', 'plaque-avatar profile-avatar')}
       <span class="cat-tag">${catLabel(biz.category)}</span>
       <h1 class="profile-name">${escapeHtml(name)}</h1>
-      <div class="neigh">📍 ${escapeHtml(biz.neighborhood)}</div>
+      <div class="neigh">📍 ${escapeHtml(biz.neighborhood)}${biz.neighborhood ? ', ' : ''}${escapeHtml(cityLabel(biz.city))}</div>
       <p class="desc">${escapeHtml(desc)}</p>
       <div class="profile-actions">
-        ${biz.phone ? `<a class="call" href="tel:${biz.phone}">${t('call')}</a>` : ''}
-        ${waLink ? `<a class="whatsapp" href="${waLink}" target="_blank" rel="noopener">${t('whatsapp')}</a>` : ''}
-        ${social ? `<a class="social" href="${social}" target="_blank" rel="noopener">${t('social')}</a>` : ''}
+        ${biz.phone ? `<a class="call" href="tel:${biz.phone}">${ICONS.phone}${t('call')}</a>` : ''}
+        ${waLink ? `<a class="whatsapp" href="${waLink}" target="_blank" rel="noopener">${ICONS.whatsapp}${t('whatsapp')}</a>` : ''}
+        ${biz.instagram ? `<a class="social" href="${biz.instagram}" target="_blank" rel="noopener">${ICONS.instagram}Instagram</a>` : ''}
+        ${biz.facebook ? `<a class="social" href="${biz.facebook}" target="_blank" rel="noopener">${ICONS.facebook}Facebook</a>` : ''}
       </div>
       ${mapLinks ? `
         <div class="profile-actions">
-          <a class="call" href="${mapLinks.viewUrl}" target="_blank" rel="noopener">📍 View on Maps</a>
-          ${mapLinks.directionsUrl ? `<a class="whatsapp" href="${mapLinks.directionsUrl}" target="_blank" rel="noopener">🧭 Get Directions</a>` : ''}
+          <a class="call" href="${mapLinks.viewUrl}" target="_blank" rel="noopener">${ICONS.pin}View on Maps</a>
+          ${mapLinks.directionsUrl ? `<a class="whatsapp" href="${mapLinks.directionsUrl}" target="_blank" rel="noopener">${ICONS.directions}Get Directions</a>` : ''}
         </div>
         ${mapLinks.embedUrl ? `
           <div class="profile-map">
