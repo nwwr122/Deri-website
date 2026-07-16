@@ -18,6 +18,47 @@ let editingId = null;
 let formLang = 'en';
 let toastTimer = null;
 
+// IMPORTANT: this must be your real live site address, so every QR code
+// works from any phone regardless of where the admin panel happens to be
+// running (including testing locally). Update this if you ever move to
+// a custom domain (see PROJECT_CONTEXT.md).
+const SITE_BASE_URL = 'https://nwwr122.github.io/Deri-website';
+
+function showQrCode(id) {
+  const list = STORE.getCached();
+  const biz = list.find(b => b.id === id);
+  if (!biz) return;
+
+  const name = biz.name.en || biz.name.ku || biz.name.ar || 'Business';
+  const url = `${SITE_BASE_URL}/profile.html?id=${encodeURIComponent(biz.id)}`;
+
+  document.getElementById('qrModalTitle').textContent = name;
+  document.getElementById('qrUrlText').textContent = url;
+
+  const canvas = document.getElementById('qrCanvas');
+  QRCode.toCanvas(canvas, url, { width: 240, margin: 2 }, (err) => {
+    if (err) {
+      showToast('Could not generate QR code — check the console.', true);
+      console.error(err);
+      return;
+    }
+    document.getElementById('qrModalOverlay').style.display = 'flex';
+  });
+
+  const downloadBtn = document.getElementById('qrDownloadBtn');
+  downloadBtn.onclick = () => {
+    const link = document.createElement('a');
+    const safeName = name.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    link.download = `deri-qr-${safeName}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+}
+
+function closeQrModal() {
+  document.getElementById('qrModalOverlay').style.display = 'none';
+}
+
 function showToast(message, isError) {
   const toast = document.getElementById('adminToast');
   if (!toast) return;
@@ -97,6 +138,7 @@ function renderAdminTable() {
       <td>${catLabel(b.category)}</td>
       <td>${escapeHtml(b.neighborhood)}</td>
       <td>${b.scans || 0}</td>
+      <td><button class="btn small outline" onclick="showQrCode('${b.id}')">QR Code</button></td>
       <td class="row-actions">
         <button class="btn small outline" onclick="editBusiness('${b.id}')">Edit</button>
         <button class="btn small rust" onclick="deleteBusiness('${b.id}')">Delete</button>
@@ -108,8 +150,8 @@ function renderAdminTable() {
 function clearForm() {
   editingId = null;
   document.getElementById('bizForm').reset();
-  document.getElementById('formTitle').textContent = 'Add a business';
-  document.getElementById('submitBtnLabel').textContent = 'Save business';
+  document.getElementById('formTitle').textContent = 'زیادکرنا کاروبارەکێ';
+  document.getElementById('submitBtnLabel').textContent = 'پاراستنا کاروبارێ';
   setFormLang('en');
 }
 
@@ -118,8 +160,8 @@ function editBusiness(id) {
   const b = list.find(x => x.id === id);
   if (!b) return;
   editingId = id;
-  document.getElementById('formTitle').textContent = 'Edit business';
-  document.getElementById('submitBtnLabel').textContent = 'Update business';
+  document.getElementById('formTitle').textContent = 'دەستکاریکرنا کاروبارێ';
+  document.getElementById('submitBtnLabel').textContent = 'نویکرنا کاروبارێ';
 
   document.getElementById('name_en').value = b.name.en || '';
   document.getElementById('name_ku').value = b.name.ku || '';
@@ -142,11 +184,11 @@ function editBusiness(id) {
 }
 
 async function deleteBusiness(id) {
-  if (!confirm('Delete this business listing? This cannot be undone.')) return;
+  if (!confirm('ئەرێ دڤێت ئەڤ کاروبارە ژێ ببەی؟ ئەڤ کارە ناگەڕێتەوە.')) return;
   const ok = await STORE.remove(id);
   if (ok) {
     renderAdminTable();
-    showToast('Business deleted.');
+    showToast('کاروبار هاتە ژێبرن.');
   } else {
     showToast('Delete failed — check the console for details.', true);
   }
@@ -179,7 +221,7 @@ async function submitBizForm(e) {
   };
 
   if (!record.name.en && !record.name.ku && !record.name.ar) {
-    alert('Please enter a business name in at least one language.');
+    alert('تکایە ناڤێ کاروبارێ بەلایەنی کەم ل زمانەکێ بنڤیسە.');
     return;
   }
 
@@ -189,13 +231,20 @@ async function submitBizForm(e) {
     : await STORE.insert(record);
 
   if (!ok) {
-    showToast('Something went wrong saving — check the console for details.', true);
+    showToast('خەلەتەک چێبوو د پاراستنێدا — تکایە کۆنسولا browserê ببینە بۆ زانیاریێن زێدەتر.', true);
     return;
   }
 
   clearForm();
   renderAdminTable();
-  showToast(wasEditing ? '✓ Business updated.' : '✓ Business added.');
+  showToast(wasEditing ? '✓ کاروبار هاتە نویکرن.' : '✓ کاروبار هاتە زیادکرن.');
+
+  if (!wasEditing) {
+    // Newest business is last, since STORE.fetchAll() orders by created_at ascending.
+    const list = STORE.getCached();
+    const newest = list[list.length - 1];
+    if (newest) showQrCode(newest.id);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

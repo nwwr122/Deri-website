@@ -23,8 +23,8 @@ function renderShowcaseStrings() {
 // small additions to the shared STRINGS object, specific to this page
 STRINGS.en.showcaseTitle = 'All business profiles';
 STRINGS.en.showcaseSub = 'Every business currently listed on DERÎ, in full.';
-STRINGS.ku.showcaseTitle = 'Hemû profîlên karsaziyan';
-STRINGS.ku.showcaseSub = 'Hemû karsaziyên ku niha li ser DERÎ hatine tomarkirin, bi tevahî.';
+STRINGS.ku.showcaseTitle = 'هەمی پرۆفایلێن کاروباران';
+STRINGS.ku.showcaseSub = 'هەمی کاروبارێن تۆمارکری ل DERÎ، ب تەڤایی.';
 STRINGS.ar.showcaseTitle = 'كل ملفات الأعمال';
 STRINGS.ar.showcaseSub = 'كل الأعمال المسجّلة حالياً على DERÎ، كاملة.';
 
@@ -51,7 +51,7 @@ function renderShowcaseGrid() {
       <article class="plaque profile-plaque" onclick="location.href='profile.html?id=${b.id}'">
         <span class="badge">No. ${num}</span>
         ${businessAvatarHtml(b, name)}
-        <span class="cat-tag">${catLabel(b.category)}</span>
+        <span class="cat-tag">${categoryIcon(b.category)}${catLabel(b.category)}</span>
         <h3>${escapeHtml(name)}</h3>
         <div class="neigh">📍 ${escapeHtml(b.neighborhood)}${b.neighborhood ? ', ' : ''}${escapeHtml(cityLabel(b.city))}</div>
         <p class="desc">${escapeHtml(desc)}</p>

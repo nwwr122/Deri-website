@@ -6,7 +6,7 @@
    numbered badges, signpost category pills, address-card grid.
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700&family=Katibeh&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700&display=swap');
 
 :root {
   /* ---- palette: limestone hills + dusk sky + brass plaque ---- */
@@ -24,8 +24,8 @@
 
   --font-display: 'Fraunces', serif;
   --font-body:    'Inter', sans-serif;
-  --font-ar:      'Cairo', sans-serif;
-  --font-ar-display: 'Katibeh', serif;
+  --font-ar:      'Cairo', 'Noto Sans Arabic', sans-serif;
+  --font-ar-display: 'Cairo', 'Noto Sans Arabic', sans-serif;
 
   --radius: 10px;
 }
@@ -143,7 +143,7 @@ button { font-family: inherit; }
   max-width: 16ch;
 }
 
-body[dir="rtl"] .hero h1 { font-family: var(--font-ar-display); font-size: clamp(34px, 5vw, 52px); }
+body[dir="rtl"] .hero h1 { font-family: var(--font-ar-display); font-weight: 800; font-size: clamp(34px, 5vw, 52px); }
 
 .hero p.sub {
   color: var(--ink-soft);
@@ -229,6 +229,9 @@ select:focus-visible {
   font-weight: 600;
   cursor: pointer;
   color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .cat-pill.active {
@@ -324,6 +327,9 @@ body[dir="rtl"] .plaque .badge { left: auto; right: 18px; }
   letter-spacing: 0.05em;
   color: var(--sage);
   margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .plaque h3 {
@@ -333,7 +339,7 @@ body[dir="rtl"] .plaque .badge { left: auto; right: 18px; }
   margin: 0;
 }
 
-body[dir="rtl"] .plaque h3 { font-family: var(--font-ar-display); font-size: 24px; }
+body[dir="rtl"] .plaque h3 { font-family: var(--font-ar-display); font-weight: 700; font-size: 24px; }
 
 .plaque .neigh {
   font-size: 13px;
@@ -444,7 +450,9 @@ body[dir="rtl"] .profile-card .badge { left: auto; right: 26px; }
   letter-spacing: 0.05em;
   color: var(--sage);
   margin-top: 10px;
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .profile-card h1.profile-name {
@@ -454,7 +462,7 @@ body[dir="rtl"] .profile-card .badge { left: auto; right: 26px; }
   margin: 6px 0 4px;
 }
 
-body[dir="rtl"] .profile-card h1.profile-name { font-family: var(--font-ar-display); font-size: 38px; }
+body[dir="rtl"] .profile-card h1.profile-name { font-family: var(--font-ar-display); font-weight: 800; font-size: 38px; }
 
 .profile-card .neigh {
   font-size: 14.5px;
@@ -543,6 +551,52 @@ body[dir="rtl"] .profile-card h1.profile-name { font-family: var(--font-ar-displ
 }
 
 body[dir="rtl"] .admin-toast { right: auto; left: 20px; }
+
+.qr-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(35, 38, 43, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.qr-modal {
+  background: var(--bg-raised);
+  border-radius: var(--radius);
+  padding: 28px;
+  text-align: center;
+  max-width: 320px;
+  width: 100%;
+  box-shadow: var(--shadow);
+}
+
+.qr-modal h3 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  margin: 0 0 16px;
+}
+
+.qr-modal canvas {
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.qr-url-text {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  word-break: break-all;
+  margin: 12px 0 18px;
+}
+
+.qr-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
 
 /* ---------------- admin page ---------------- */
 

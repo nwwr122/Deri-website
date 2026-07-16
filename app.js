@@ -109,22 +109,22 @@ const STORE = {
 };
 
 const CATEGORIES = [
-  { id: 'all', en: 'All', ku: 'Hemû', ar: 'الكل' },
-  { id: 'grocery', en: 'Grocery & Household Goods', ku: 'Dikan û Kelûpelên Malê', ar: 'بقالة ولوازم منزلية' },
-  { id: 'household_services', en: 'Home Services', ku: 'Xizmetên Malê', ar: 'خدمات منزلية' },
-  { id: 'clinic', en: 'Clinics & Pharmacies', ku: 'Klînîk û Dermanxane', ar: 'عيادات وصيدليات' },
-  { id: 'restaurant', en: 'Restaurants', ku: 'Xwaringeh', ar: 'مطاعم' },
-  { id: 'cafe_entertainment', en: 'Cafés & Entertainment', ku: 'Qehwexane û Cîhên Şahiyê', ar: 'مقاهي وترفيه' },
-  { id: 'mobile', en: 'Mobile & Electronics', ku: 'Mobîl û Elektronîk', ar: 'موبايلات وإلكترونيات' },
-  { id: 'tutoring', en: 'Tutoring', ku: 'Fêrkirin', ar: 'دروس خصوصية' },
-  { id: 'salon', en: 'Salon & Barber', ku: 'Salon û Berber', ar: 'صالون وحلاقة' },
-  { id: 'other', en: 'Other', ku: 'Yên din', ar: 'أخرى' }
+  { id: 'all', en: 'All', ku: 'هەمی', ar: 'الكل' },
+  { id: 'grocery', en: 'Grocery & Household Goods', ku: 'دوکان و کەلوپەلێن مالێ', ar: 'بقالة ولوازم منزلية' },
+  { id: 'household_services', en: 'Home Services', ku: 'خزمەتگوزاریێن مالێ', ar: 'خدمات منزلية' },
+  { id: 'clinic', en: 'Clinics & Pharmacies', ku: 'کلینیک و دەرمانخانە', ar: 'عيادات وصيدليات' },
+  { id: 'restaurant', en: 'Restaurants', ku: 'خواردنگەه', ar: 'مطاعم' },
+  { id: 'cafe_entertainment', en: 'Cafés & Entertainment', ku: 'قاوەخانە و شوێنێن شایی', ar: 'مقاهي وترفيه' },
+  { id: 'mobile', en: 'Mobile & Electronics', ku: 'مۆبایل و ئەلیکترۆنیات', ar: 'موبايلات وإلكترونيات' },
+  { id: 'tutoring', en: 'Tutoring', ku: 'فێرکاری', ar: 'دروس خصوصية' },
+  { id: 'salon', en: 'Salon & Barber', ku: 'سالۆن و بەربەر', ar: 'صالون وحلاقة' },
+  { id: 'other', en: 'Other', ku: 'یێن دی', ar: 'أخرى' }
 ];
 
 const CITIES = [
-  { id: 'all', en: 'All Areas', ku: 'Hemû Herêm', ar: 'كل المناطق' },
-  { id: 'duhok', en: 'Duhok', ku: 'Duhok', ar: 'دهوك' },
-  { id: 'shexan', en: 'Shexan', ku: 'Şêxan', ar: 'الشيخان' }
+  { id: 'all', en: 'All Areas', ku: 'هەمی هەرێمان', ar: 'كل المناطق' },
+  { id: 'duhok', en: 'Duhok', ku: 'دهۆک', ar: 'دهوك' },
+  { id: 'shexan', en: 'Shexan', ku: 'شێخان', ar: 'الشيخان' }
 ];
 
 const STRINGS = {
@@ -139,20 +139,22 @@ const STRINGS = {
     scans: 'leaflet scans this month',
     admin: 'Admin',
     areaFilterLabel: 'Area', categoryFilterLabel: 'Category',
+    viewOnMaps: 'View on Maps', getDirections: 'Get Directions',
     footer: 'DERÎ — a directory built from doorstep leaflets.'
   },
   ku: {
-    tagline: 'Karsaziyên herêmî, li ber derê te',
-    heroTitle: 'Karsaziyek baş li nêzîk xwe bibîne',
-    heroSub: 'DERÎ karsaziyên rastîn ên herêmî tomar dike — heman karsaziyên ku bi kaxezên belavokê digihên derê te. Li gorî nav, kategorî, an taxê lêbigere.',
-    searchPlaceholder: 'Li karsazî an taxê bigere…',
-    resultsFor: 'karsazî',
-    emptyState: 'Ti karsazî li gorî lêgerîna te nehat dîtin. Kategorek din biceribîne.',
-    call: 'Telefon', whatsapp: 'WhatsApp', social: 'Medya',
-    scans: 'skanên belavokê vê mehê',
-    admin: 'Admîn',
-    areaFilterLabel: 'Herêm', categoryFilterLabel: 'Kategorî',
-    footer: 'DERÎ — pêrista ku ji belavokên deriyan pêk hatiye.'
+    tagline: 'کاروبارێن هەرێمی، ل بەردەری تە',
+    heroTitle: 'کاروبارەکێ باش ل نێزیک خۆ ببینە',
+    heroSub: 'DERÎ کاروبارێن راستین یێن هەرێمی تۆمار دکەت — هەمان کاروبارێن کو ب بەڵاوکێن دەرگەهان دگەهنە بەردەری تە. ب ناڤ، پۆل یان گەڕەک بگەڕێ.',
+    searchPlaceholder: 'ل کاروبار یان گەڕەک بگەڕێ...',
+    resultsFor: 'کاروبار',
+    emptyState: 'هیچ کاروبارەک ب گونجانا گەڕانا تە نەهاتە دیتن. پۆلەکێ دی هەوڵ بدە.',
+    call: 'تەلەفۆن', whatsapp: 'واتساپ', social: 'تۆڕێن کۆمەڵایەتی',
+    scans: 'ژمارا سکانێن بەڵاوکێن ڤێ مانگێ',
+    admin: 'ئەدمین',
+    areaFilterLabel: 'هەرێم', categoryFilterLabel: 'پۆل',
+    viewOnMaps: 'ل نەخشە ببینە', getDirections: 'ڕێنمایا شوێنێ',
+    footer: 'DERÎ — بەڕێڤەبەرا کاروباران یا دروستکری ژ بەڵاوکێن دەرگەهان.'
   },
   ar: {
     tagline: 'أعمال محلية، تصلك عند بابك',
@@ -165,21 +167,41 @@ const STRINGS = {
     scans: 'مسح للمنشور هذا الشهر',
     admin: 'الإدارة',
     areaFilterLabel: 'المنطقة', categoryFilterLabel: 'الفئة',
+    viewOnMaps: 'عرض على الخرائط', getDirections: 'الحصول على الاتجاهات',
     footer: 'DERÎ — دليل مبني من منشورات الأبواب.'
   }
 };
 
-let currentLang = 'en';
+const LANG_STORAGE_KEY = 'deri_lang';
+
+function getSavedLang() {
+  try {
+    return localStorage.getItem(LANG_STORAGE_KEY) || 'ku';
+  } catch (e) {
+    return 'ku'; // localStorage unavailable (rare) — fall back to default
+  }
+}
+
+let currentLang = getSavedLang();
 
 function t(key) { return STRINGS[currentLang][key]; }
 
+function syncLangButtonsUI() {
+  document.querySelectorAll('.lang-switch button').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === currentLang);
+  });
+}
+
+function applyLangDirection() {
+  document.documentElement.lang = currentLang;
+  document.body.dir = (currentLang === 'ar' || currentLang === 'ku') ? 'rtl' : 'ltr';
+}
+
 function setLang(lang) {
   currentLang = lang;
-  document.documentElement.lang = lang;
-  document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  document.querySelectorAll('.lang-switch button').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === lang);
-  });
+  try { localStorage.setItem(LANG_STORAGE_KEY, lang); } catch (e) { /* ignore */ }
+  applyLangDirection();
+  syncLangButtonsUI();
   renderStaticStrings();
   renderPublicPage();
   if (typeof renderShowcasePage === 'function') renderShowcasePage();
@@ -207,7 +229,7 @@ function renderCategoryStrip() {
   CATEGORIES.forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'cat-pill' + (activeCategory === c.id ? ' active' : '');
-    btn.textContent = c[currentLang] || c.en;
+    btn.innerHTML = categoryIcon(c.id) + `<span>${escapeHtml(c[currentLang] || c.en)}</span>`;
     btn.onclick = () => { activeCategory = c.id; renderPublicPage(); };
     strip.appendChild(btn);
   });
@@ -263,7 +285,7 @@ function renderBusinessGrid() {
       <article class="plaque" onclick="location.href='profile.html?id=${b.id}'">
         <span class="badge">No. ${num}</span>
         ${businessAvatarHtml(b, name)}
-        <span class="cat-tag">${catLabel(b.category)}</span>
+        <span class="cat-tag">${categoryIcon(b.category)}${catLabel(b.category)}</span>
         <h3>${escapeHtml(name)}</h3>
         <div class="neigh">📍 ${escapeHtml(b.neighborhood)}${b.neighborhood ? ', ' : ''}${escapeHtml(cityLabel(b.city))}</div>
         <p class="desc">${escapeHtml(desc)}</p>
@@ -372,6 +394,25 @@ const ICONS = {
   directions: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>'
 };
 
+// One consistent icon per category, used on filter pills and card tags
+// so categories are recognizable at a glance, not just by reading text.
+const CATEGORY_ICONS = {
+  all: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+  grocery: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+  household_services: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"/></svg>',
+  clinic: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
+  restaurant: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2M7 2v20M17 2v20M17 2a4 4 0 0 0-4 4v3a2 2 0 0 0 2 2h2"/></svg>',
+  cafe_entertainment: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>',
+  mobile: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+  tutoring: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  salon: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>',
+  other: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg>'
+};
+
+function categoryIcon(catId) {
+  return CATEGORY_ICONS[catId] || CATEGORY_ICONS.other;
+}
+
 function businessAvatarHtml(business, displayName) {
   if (business.imageUrl) {
     return `<img class="plaque-avatar" src="${escapeHtml(business.imageUrl)}" alt="${escapeHtml(displayName)}" onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'plaque-avatar plaque-avatar-fallback', textContent:'${escapeHtml((displayName || '?').charAt(0).toUpperCase())}'}))">`;
@@ -388,6 +429,12 @@ function escapeHtml(str) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Apply the visitor's saved language choice (or the Badini default)
+  // right away, so the page opens correctly instead of flashing English/LTR first.
+  applyLangDirection();
+  syncLangButtonsUI();
+  renderStaticStrings();
+
   // One fetch from Supabase, shared by whichever page we're on.
   await STORE.fetchAll();
 

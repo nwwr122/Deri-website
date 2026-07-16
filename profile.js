@@ -53,8 +53,8 @@ function renderProfilePage() {
       </div>
       ${mapLinks ? `
         <div class="profile-actions">
-          <a class="call" href="${mapLinks.viewUrl}" target="_blank" rel="noopener">${ICONS.pin}View on Maps</a>
-          ${mapLinks.directionsUrl ? `<a class="whatsapp" href="${mapLinks.directionsUrl}" target="_blank" rel="noopener">${ICONS.directions}Get Directions</a>` : ''}
+          <a class="call" href="${mapLinks.viewUrl}" target="_blank" rel="noopener">${ICONS.pin}${t('viewOnMaps')}</a>
+          ${mapLinks.directionsUrl ? `<a class="whatsapp" href="${mapLinks.directionsUrl}" target="_blank" rel="noopener">${ICONS.directions}${t('getDirections')}</a>` : ''}
         </div>
         ${mapLinks.embedUrl ? `
           <div class="profile-map">

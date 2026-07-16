@@ -159,7 +159,64 @@ Follow this every time, to avoid lost context or broken deploys:
 
 *Newest entries at the top.*
 
-### [7/14/2026]
+### [7/16/2026]
+**What changed:** Four related usability fixes:
+1. **Language now actually persists** — previously the selected language reset to English on
+   every new page (clicking into a profile, clicking the logo, etc.) because it was only ever
+   held in a JS variable that reset on each page load. Now saved to `localStorage` and read back
+   on every page load, via `getSavedLang()`/`setLang()`.
+2. **Default language changed to Badini Kurdish** (`ku`) instead of English, for first-time
+   visitors with no saved preference yet.
+3. **Fixed the "brushy/blurry" Arabic-script heading font** — swapped the decorative `Katibeh`
+   display font (used for RTL headings) for `Cairo` at heavier weight, matching the cleaner body
+   font already used elsewhere. Removed the now-unused Katibeh font import.
+4. **Added consistent icons per business category** — a `CATEGORY_ICONS` map with one
+   recognizable icon per category (shopping bag, wrench, medical cross, utensils, coffee cup,
+   phone, book, scissors, etc.), shown on the category filter pills and on every business card's
+   category tag (directory, showcase, and profile pages), for faster visual scanning.
+**Why:** Direct feedback from testing — language selection not sticking was a real usability
+break, the Katibeh font was hard to read, and category names alone were slower to scan than
+icon + text together.
+**Files touched:** `app.js` (`getSavedLang`, `syncLangButtonsUI`, `applyLangDirection`,
+`CATEGORY_ICONS`, `categoryIcon()`, bootstrap order), `showcase.js`/`profile.js` (category icon
+on tags), `style.css` (font stack, `.cat-pill`/`.cat-tag` flex alignment for icons).
+
+### [7/16/2026]
+**What changed:** Added client-side QR code generation to the admin panel. Each business row now
+has a "QR Code" button that generates a QR code (via the `qrcode` library, loaded from CDN) for
+that exact business's `profile.html?id=...` URL — shown in a modal with a "Download PNG" button
+for dropping straight into leaflet designs. QR codes are also generated automatically right after
+adding a new business (not on edits). New `SITE_BASE_URL` constant in `admin.js` controls what
+domain gets encoded — must be updated manually if a custom domain is ever connected.
+**Why:** Removes manual copy-pasting of profile URLs into a third-party QR generator, keeps QR
+generation entirely client-side (no data sent to any external service), and ties QR codes
+directly and reliably to the correct business ID every time.
+**Files touched:** `admin.html` (QR library script tag, modal markup, table column), `admin.js`
+(`showQrCode`, `closeQrModal`, `SITE_BASE_URL`, auto-trigger after adding), `style.css` (modal
+styling).
+
+### [7/16/2026]
+**What changed:** Replaced all Latin-script Kurmanji (`ku`) user-facing text throughout the
+project with natural Badini Kurdish written in Arabic script — covers `STRINGS.ku` (all pages),
+`CATEGORIES`, `CITIES`, the showcase page's extra strings, and the admin form's Kurdish name/
+description fields (now also set to `dir="rtl"`, and the tab relabeled "Kurdish (Badini)" since
+the script changed). Several admin-panel-only messages (add/edit/delete labels, confirmation and
+validation text) that were previously English-only were also translated to Badini, per direct
+request. Fixed `setLang()` so selecting Kurdish now also switches the page to right-to-left
+layout (previously only Arabic did this — Kurdish text was Latin/LTR before, so this wasn't
+needed until now). "View on Maps"/"Get Directions" on the profile page were moved from hardcoded
+English into the proper translation system (`viewOnMaps`/`getDirections` keys, all three
+languages) so they now actually translate instead of always showing English. Added Noto Sans
+Arabic as a font fallback for broader Kurdish-specific letter coverage.
+**Why:** Direct request — the target audience (Duhok/Shexan) reads Badini in Arabic script, and
+Latin-script Kurmanji wasn't the right fit for real users. English and Arabic translations were
+left untouched, only Kurdish changed.
+**Files touched:** `app.js` (`STRINGS.ku`, `CATEGORIES`, `CITIES`, `setLang` RTL logic, new
+`viewOnMaps`/`getDirections` keys added to all languages), `showcase.js` (extra `ku` strings),
+`profile.js` (map buttons now translated), `admin.html` (ku field placeholders/labels/dir, tab
+label), `admin.js` (hardcoded UI strings), `style.css` (font stack).
+
+### [7/15/2026]
 **What changed:** Three usability improvements bundled together:
 1. **Admin save/delete feedback** — a small toast notification ("✓ Business added." /
    "✓ Business updated." / "Business deleted.") now appears briefly after every admin action,
@@ -255,7 +312,7 @@ resolver (e.g. a Supabase Edge Function).
 **Files touched:** `app.js` (new helpers), `profile.js` (uses `buildMapEmbedUrl` instead of
 building the URL inline), `admin.html` (updated field helper text).
 
-### [7/13/2026]
+### [7/12/2026]
 **What changed:** Added a location map to individual business profile pages (`profile.html`
 only — deliberately not on the directory/showcase cards, to avoid crowding them). New
 `map_location` text column on the `businesses` table. New "Map location" field in the admin
@@ -273,7 +330,7 @@ in Supabase SQL Editor), `app.js` (row↔business mapping), `profile.js` (map re
 conditionally), `style.css` (`.profile-map` container), `admin.html` (new Map location field),
 `admin.js` (read/write that field).
 
-### [7/13/2026]
+### [7/12/2026]
 **What changed:** Added a photo/profile picture for businesses. New `image_url` text column on
 the `businesses` table (Supabase). New "Photo URL" field in the admin panel. Business cards on
 the directory, showcase, and profile pages now show that photo if set, or a letter-avatar
