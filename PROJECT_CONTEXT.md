@@ -159,6 +159,41 @@ Follow this every time, to avoid lost context or broken deploys:
 
 *Newest entries at the top.*
 
+### [7/17/2026]
+What changed: Made the font consistent across the entire site, all languages. Previously
+English used a serif display font (Fraunces) for headings plus Inter for body text, while
+Arabic/Kurdish used Cairo — two visibly different typographic styles depending on language.
+Switched --font-display and --font-body to Cairo as well, so English now matches the same
+clean look already used for Arabic/Kurdish. Removed the now-unused Fraunces font import (Inter
+kept as a lightweight fallback only).
+Why: Direct feedback — the person preferred the Arabic/Kurdish font style and wanted one
+consistent look site-wide rather than switching visual identity by language.
+Files touched: style.css (--font-display, --font-body, Google Fonts import).
+
+
+### [7/17/2026]
+**What changed:** Three changes:
+1. **Language switcher now shows full names in each language's own script** — "English",
+   "العربية", "کوردی" — instead of the abbreviations EN/AR/KU.
+2. **Scan counting is now QR-only.** Previously every profile page visit counted as a "scan,"
+   including someone just clicking a business card on the directory or showcase page — which
+   conflated real leaflet reach with ordinary site browsing. QR codes generated in the admin
+   panel now encode an extra `&src=qr` marker; `profile.html` only increments the scan count
+   when that marker is present. **Important:** any QR codes already downloaded/printed before
+   this change don't have the marker, so scanning them will still open the correct business page
+   but won't count toward scans anymore — regenerate/redownload QR codes for any businesses
+   already using printed leaflets, if accurate counts matter for those.
+3. **Removed the "No. 001" ranking badge** from every card and the profile page (directory,
+   showcase, and profile.js) — there's no real ranking logic behind it yet, and showing a number
+   implied a hierarchy that isn't intended. A proper ranking approach can be added later.
+**Why:** Direct feedback from testing — abbreviations weren't immediately recognizable to less
+tech-familiar users, the scan count needed to reflect actual leaflet reach specifically (the
+whole point of the QR system), and the numbering looked like an unintended priority order.
+**Files touched:** `index.html`/`showcase.html`/`profile.html` (language switcher labels),
+`admin.js` (`&src=qr` marker on generated QR URLs), `profile.js` (`isFromQrScan()` gate on
+`STORE.incrementScan()`), `app.js`/`showcase.js`/`profile.js` (removed badge markup and its
+now-unused index/number calculations).
+
 ### [7/16/2026]
 **What changed:** Four related usability fixes:
 1. **Language now actually persists** — previously the selected language reset to English on
@@ -296,7 +331,7 @@ preview anyway.
 **Files touched:** `app.js` (`buildMapEmbedUrl` → `buildMapLinks`), `profile.js` (renders the
 button pair plus the existing iframe preview).
 
-### [7/13/2026]
+### [7/12/2026]
 **What changed:** The "Map location" field now also accepts pasted Google Maps links (copied
 from a desktop browser's address bar), not just raw coordinates or a plain address. Added
 `extractLatLng()` and `buildMapEmbedUrl()` helpers in `app.js` that recognize several common
@@ -312,7 +347,7 @@ resolver (e.g. a Supabase Edge Function).
 **Files touched:** `app.js` (new helpers), `profile.js` (uses `buildMapEmbedUrl` instead of
 building the URL inline), `admin.html` (updated field helper text).
 
-### [7/12/2026]
+### [Add the date you push this]
 **What changed:** Added a location map to individual business profile pages (`profile.html`
 only — deliberately not on the directory/showcase cards, to avoid crowding them). New
 `map_location` text column on the `businesses` table. New "Map location" field in the admin

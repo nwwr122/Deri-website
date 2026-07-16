@@ -16,6 +16,15 @@ function getBusinessIdFromUrl() {
   return params.get('id');
 }
 
+// True only when this page was reached via a printed QR code (the QR
+// admin panel encodes an extra &src=qr marker) — clicking through from
+// the directory or showcase page never has this, so those visits don't
+// inflate the scan count.
+function isFromQrScan() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('src') === 'qr';
+}
+
 function renderProfilePage() {
   const container = document.getElementById('profileContainer');
   if (!container) return;
@@ -32,16 +41,13 @@ function renderProfilePage() {
   const name = biz.name[currentLang] || biz.name.en;
   const desc = biz.desc[currentLang] || biz.desc.en;
   const waLink = biz.whatsapp ? `https://wa.me/${biz.whatsapp.replace(/[^0-9]/g, '')}` : null;
-  const idx = list.findIndex(b => b.id === biz.id);
-  const num = String(idx + 1).padStart(3, '0');
 
   const mapLinks = buildMapLinks(biz.mapLocation);
 
   container.innerHTML = `
     <div class="profile-card">
-      <span class="badge">No. ${num}</span>
       ${businessAvatarHtml(biz, name).replace('plaque-avatar', 'plaque-avatar profile-avatar')}
-      <span class="cat-tag">${catLabel(biz.category)}</span>
+      <span class="cat-tag">${categoryIcon(biz.category)}${catLabel(biz.category)}</span>
       <h1 class="profile-name">${escapeHtml(name)}</h1>
       <div class="neigh">📍 ${escapeHtml(biz.neighborhood)}${biz.neighborhood ? ', ' : ''}${escapeHtml(cityLabel(biz.city))}</div>
       <p class="desc">${escapeHtml(desc)}</p>
@@ -72,7 +78,7 @@ function renderProfilePage() {
 async function profileInit() {
   if (!document.getElementById('profileContainer')) return;
   const id = getBusinessIdFromUrl();
-  if (id) {
+  if (id && isFromQrScan()) {
     await STORE.incrementScan(id);
     await STORE.fetchAll(); // pick up the fresh count before rendering
   }

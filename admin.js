@@ -30,7 +30,10 @@ function showQrCode(id) {
   if (!biz) return;
 
   const name = biz.name.en || biz.name.ku || biz.name.ar || 'Business';
-  const url = `${SITE_BASE_URL}/profile.html?id=${encodeURIComponent(biz.id)}`;
+  // The &src=qr marker is what lets profile.html tell a real QR scan
+  // apart from someone just clicking through the site normally — only
+  // visits with this marker increment the scan counter.
+  const url = `${SITE_BASE_URL}/profile.html?id=${encodeURIComponent(biz.id)}&src=qr`;
 
   document.getElementById('qrModalTitle').textContent = name;
   document.getElementById('qrUrlText').textContent = url;

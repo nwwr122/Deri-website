@@ -42,14 +42,12 @@ function renderShowcaseGrid() {
     return;
   }
 
-  grid.innerHTML = all.map((b, i) => {
+  grid.innerHTML = all.map((b) => {
     const name = b.name[currentLang] || b.name.en;
     const desc = b.desc[currentLang] || b.desc.en;
-    const num = String(i + 1).padStart(3, '0');
     const waLink = b.whatsapp ? `https://wa.me/${b.whatsapp.replace(/[^0-9]/g, '')}` : null;
     return `
       <article class="plaque profile-plaque" onclick="location.href='profile.html?id=${b.id}'">
-        <span class="badge">No. ${num}</span>
         ${businessAvatarHtml(b, name)}
         <span class="cat-tag">${categoryIcon(b.category)}${catLabel(b.category)}</span>
         <h3>${escapeHtml(name)}</h3>
