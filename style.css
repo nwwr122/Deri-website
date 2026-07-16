@@ -6,7 +6,7 @@
    numbered badges, signpost category pills, address-card grid.
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
 
 :root {
   /* ---- palette: limestone hills + dusk sky + brass plaque ---- */
@@ -22,10 +22,10 @@
   --line:      #DAD3C2;   /* hairline borders */
   --shadow:    0 1px 2px rgba(35,38,43,0.06), 0 6px 16px rgba(35,38,43,0.06);
 
-  --font-display: 'Cairo', sans-serif;
-  --font-body:    'Cairo', 'Inter', sans-serif;
-  --font-ar:      'Cairo', 'Noto Sans Arabic', sans-serif;
-  --font-ar-display: 'Cairo', 'Noto Sans Arabic', sans-serif;
+  --font-display: 'Vazirmatn', sans-serif;
+  --font-body:    'Vazirmatn', sans-serif;
+  --font-ar:      'Vazirmatn', sans-serif;
+  --font-ar-display: 'Vazirmatn', sans-serif;
 
   --radius: 10px;
 }
@@ -410,12 +410,67 @@ footer.site-footer {
 }
 
 .back-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 13.5px;
-  color: var(--ink-soft);
+  font-weight: 700;
+  color: var(--ink);
   text-decoration: none;
-  border-bottom: 1px dotted var(--ink-soft);
-  margin-bottom: 22px;
+  border: 1.5px solid var(--ink);
+  background: var(--bg-raised);
+  padding: 8px 16px;
+  border-radius: 999px;
+  margin-bottom: 24px;
+}
+
+.back-link:hover {
+  background: var(--ink);
+  color: var(--bg-raised);
+}
+
+body[dir="rtl"] .back-link svg {
+  transform: scaleX(-1);
+}
+
+#discoveryBanner {
+  background: var(--sage);
+}
+
+.discovery-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 24px;
+  color: #fff;
+}
+
+.discovery-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.discovery-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  flex: 1 1 240px;
+}
+
+.discovery-cta {
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1.5px solid rgba(255,255,255,0.7);
+  padding: 6px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.discovery-cta:hover {
+  background: rgba(255,255,255,0.15);
 }
 
 .profile-card {

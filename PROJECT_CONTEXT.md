@@ -160,6 +160,39 @@ Follow this every time, to avoid lost context or broken deploys:
 *Newest entries at the top.*
 
 ### [7/17/2026]
+What changed: Fixed broken/disconnected Kurdish letter rendering — switched the entire
+site's font from Cairo to Vazirmatn. Cairo doesn't include glyphs for several Kurdish-Sorani/
+Badini-specific letters (ڕ, ڵ, ڤ, ھ, ێ, and others); when a font is missing a letter,
+the browser silently substitutes it from a different fallback font, which is exactly why some
+letters in Kurdish words looked broken/disconnected from their neighbors in testing — they were
+literally rendering from two different typefaces mid-word. Vazirmatn has full glyph coverage for
+Kurdish Sorani/Badini specifically, while keeping a similar clean, modern sans-serif look to
+Cairo, and also handles Latin/English text properly, so the whole site stays visually consistent
+across all three languages. Removed the unused Cairo/Inter/Noto Sans Arabic imports.
+Why: Direct bug report with screenshots — Kurdish button/heading text was visibly broken.
+Files touched: style.css (font import, --font-display/--font-body/--font-ar/
+--font-ar-display variables — all four now point to Vazirmatn).
+
+### [7/17/2026]
+What changed: Two navigation/onboarding improvements:
+Clearer "back to all businesses" navigation — the previous back link on the profile page
+was tiny, low-contrast dotted text, easy to miss. Restyled as a visible pill-shaped button
+with a back-arrow icon (which flips direction correctly in Arabic/Kurdish RTL layout), now
+translated via t('backToAll') instead of hardcoded English. The same link was also added to
+the showcase page, which previously had no way back to the main directory besides the logo.
+Added a discovery banner to every profile page — solves the "someone scans a QR code and
+has no idea DERÎ is a whole directory, not just one business's page" problem. A colored banner
+now appears at the very top of every profile page (#discoveryBanner, rendered by
+renderDiscoveryBanner()), before anything else, explaining that DERÎ lists many local
+businesses with a clear "Explore more businesses →" button back to the directory.
+Why: Direct request — leaflet-QR visitors land cold on a single business's page with zero
+context about the wider directory, and the existing back navigation was too subtle to notice.
+Files touched: app.js (backToAll/discoveryText/discoveryCta translation keys, all
+three languages), profile.js (renderDiscoveryBanner), profile.html/showcase.html
+(back-link markup, #discoveryBanner element), style.css (back-link restyle, RTL arrow flip,
+discovery banner styling).
+
+### [7/17/2026]
 What changed: Made the font consistent across the entire site, all languages. Previously
 English used a serif display font (Fraunces) for headings plus Inter for body text, while
 Arabic/Kurdish used Cairo — two visibly different typographic styles depending on language.

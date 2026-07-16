@@ -140,6 +140,9 @@ const STRINGS = {
     admin: 'Admin',
     areaFilterLabel: 'Area', categoryFilterLabel: 'Category',
     viewOnMaps: 'View on Maps', getDirections: 'Get Directions',
+    backToAll: '← Back to all businesses',
+    discoveryText: 'DERÎ lists real local businesses near you — not just this one.',
+    discoveryCta: 'Explore more businesses',
     footer: 'DERÎ — a directory built from doorstep leaflets.'
   },
   ku: {
@@ -154,6 +157,9 @@ const STRINGS = {
     admin: 'ئەدمین',
     areaFilterLabel: 'هەرێم', categoryFilterLabel: 'پۆل',
     viewOnMaps: 'ل نەخشە ببینە', getDirections: 'ڕێنمایا شوێنێ',
+    backToAll: 'گەڕان بۆ هەمی کاروباران',
+    discoveryText: 'DERÎ کاروبارێن راستین ێن هەرێمی نێزیکی تە تۆمار دکەت — نە تنێ ئەڤێ.',
+    discoveryCta: 'گەڕان بۆ کاروبارێن دی',
     footer: 'DERÎ — بەڕێڤەبەرا کاروباران یا دروستکری ژ بەڵاوکێن دەرگەهان.'
   },
   ar: {
@@ -168,6 +174,9 @@ const STRINGS = {
     admin: 'الإدارة',
     areaFilterLabel: 'المنطقة', categoryFilterLabel: 'الفئة',
     viewOnMaps: 'عرض على الخرائط', getDirections: 'الحصول على الاتجاهات',
+    backToAll: 'الرجوع لكل الأعمال',
+    discoveryText: 'دليل DERÎ يضم أعمالاً محلية حقيقية بالقرب منك — وليس هذا العمل فقط.',
+    discoveryCta: 'استكشف المزيد من الأعمال',
     footer: 'DERÎ — دليل مبني من منشورات الأبواب.'
   }
 };
@@ -307,7 +316,8 @@ function renderStaticStrings() {
     admin: '[data-i18n="admin"]',
     footer: '[data-i18n="footer"]',
     areaFilterLabel: '[data-i18n="areaFilterLabel"]',
-    categoryFilterLabel: '[data-i18n="categoryFilterLabel"]'
+    categoryFilterLabel: '[data-i18n="categoryFilterLabel"]',
+    backToAll: '[data-i18n="backToAll"]'
   };
   Object.entries(map).forEach(([key, sel]) => {
     const el = document.querySelector(sel);

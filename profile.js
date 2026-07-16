@@ -25,7 +25,20 @@ function isFromQrScan() {
   return params.get('src') === 'qr';
 }
 
+function renderDiscoveryBanner() {
+  const el = document.getElementById('discoveryBanner');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="wrap discovery-inner">
+      <span class="discovery-icon">📍</span>
+      <span class="discovery-text">${t('discoveryText')}</span>
+      <a class="discovery-cta" href="index.html">${t('discoveryCta')} →</a>
+    </div>
+  `;
+}
+
 function renderProfilePage() {
+  renderDiscoveryBanner();
   const container = document.getElementById('profileContainer');
   if (!container) return;
 
