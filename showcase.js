@@ -44,22 +44,17 @@ function renderShowcaseGrid() {
 
   grid.innerHTML = all.map((b) => {
     const name = b.name[currentLang] || b.name.en;
-    const desc = b.desc[currentLang] || b.desc.en;
-    const waLink = b.whatsapp ? `https://wa.me/${b.whatsapp.replace(/[^0-9]/g, '')}` : null;
     return `
       <article class="plaque profile-plaque" onclick="location.href='profile.html?id=${b.id}'">
         ${businessAvatarHtml(b, name)}
         <span class="cat-tag">${categoryIcon(b.category)}${catLabel(b.category)}</span>
         <h3>${escapeHtml(name)}</h3>
         <div class="neigh">📍 ${escapeHtml(b.neighborhood)}${b.neighborhood ? ', ' : ''}${escapeHtml(cityLabel(b.city))}</div>
-        <p class="desc">${escapeHtml(desc)}</p>
-        <div class="actions">
-          ${b.phone ? `<a class="call" href="tel:${b.phone}" onclick="event.stopPropagation()">${ICONS.phone}${t('call')}</a>` : ''}
-          ${waLink ? `<a class="whatsapp" href="${waLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.whatsapp}${t('whatsapp')}</a>` : ''}
-          ${b.instagram ? `<a class="social" href="${b.instagram}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.instagram}Instagram</a>` : ''}
-          ${b.facebook ? `<a class="social" href="${b.facebook}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.facebook}Facebook</a>` : ''}
-        </div>
         <div class="scans">📶 ${b.scans || 0} ${t('scans')}</div>
+        <div class="view-profile-strip">
+          <span>${t('viewProfile')}</span>
+          <span class="vp-arrow">${ICONS.chevronRight}</span>
+        </div>
       </article>
     `;
   }).join('');

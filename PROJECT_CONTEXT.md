@@ -159,6 +159,37 @@ Follow this every time, to avoid lost context or broken deploys:
 
 *Newest entries at the top.*
 
+### [7/20/2026]
+What changed: Removed the Call/WhatsApp/Instagram/Facebook contact buttons from directory
+and showcase cards entirely — cards now only show identity (photo, name, category, neighborhood,
+scan count) and the "View Full Profile" strip. All contact actions now live exclusively on the
+profile page. Since the buttons (and their event.stopPropagation() click-blocking) are gone,
+the entire card surface is now uniformly clickable to the profile page — no more dead zones.
+Why: Direct request — teaches the intended flow deliberately: browse/filter on the
+directory → click a card → land on the full profile → find contact info and details there.
+Leaving contact buttons on the card let people skip that flow entirely, which undermined both
+the "discover more businesses" goal and the profile page's role as the real destination.
+Files touched: app.js, showcase.js (card templates — action buttons removed).
+
+### [7/20/2026]
+What changed: Redesigned directory and showcase cards to actually encourage clicking into
+the full profile, instead of the card already showing everything needed (description + direct
+Call/WhatsApp buttons), which meant people had little reason to click further. Removed the
+business description from cards entirely (still shown in full on the profile page). Added a
+full-width "View Full Profile" strip at the bottom of every card — sage green, spanning edge to
+edge, with a small chevron icon that gently nudges every ~2.6 seconds (not a constant/distracting
+animation) to draw the eye without being obnoxious. The chevron flips direction correctly for
+Arabic/Kurdish RTL. Applied consistently to both index.html and showcase.html cards, since
+they share the same card component — assumption worth confirming if showcase should look
+different since it's meant for pitching to businesses rather than general browsing.
+Why: Direct observation — with description and contact buttons already visible on the card,
+people had no real reason to click through to the fuller profile page (which also carries the
+map, full description, and other detail), so engagement with actual profile pages was likely
+lower than it should be.
+Files touched: app.js (viewProfile translation key, new chevronRight icon, card
+template), showcase.js (same card template changes), style.css (.view-profile-strip,
+.vp-arrow with gentle nudge animation, RTL flip).
+
 ### [7/17/2026]
 What changed: Fixed broken/disconnected Kurdish letter rendering — switched the entire
 site's font from Cairo to Vazirmatn. Cairo doesn't include glyphs for several Kurdish-Sorani/

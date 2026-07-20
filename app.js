@@ -143,6 +143,7 @@ const STRINGS = {
     backToAll: '← Back to all businesses',
     discoveryText: 'DERÎ lists real local businesses near you — not just this one.',
     discoveryCta: 'Explore more businesses',
+    viewProfile: 'View Full Profile',
     footer: 'DERÎ — a directory built from doorstep leaflets.'
   },
   ku: {
@@ -160,6 +161,7 @@ const STRINGS = {
     backToAll: 'گەڕان بۆ هەمی کاروباران',
     discoveryText: 'DERÎ کاروبارێن راستین ێن هەرێمی نێزیکی تە تۆمار دکەت — نە تنێ ئەڤێ.',
     discoveryCta: 'گەڕان بۆ کاروبارێن دی',
+    viewProfile: 'پرۆفایلا تەواو ببینە',
     footer: 'DERÎ — بەڕێڤەبەرا کاروباران یا دروستکری ژ بەڵاوکێن دەرگەهان.'
   },
   ar: {
@@ -177,6 +179,7 @@ const STRINGS = {
     backToAll: 'الرجوع لكل الأعمال',
     discoveryText: 'دليل DERÎ يضم أعمالاً محلية حقيقية بالقرب منك — وليس هذا العمل فقط.',
     discoveryCta: 'استكشف المزيد من الأعمال',
+    viewProfile: 'عرض الملف الكامل',
     footer: 'DERÎ — دليل مبني من منشورات الأبواب.'
   }
 };
@@ -287,22 +290,17 @@ function renderBusinessGrid() {
 
   grid.innerHTML = filtered.map((b) => {
     const name = b.name[currentLang] || b.name.en;
-    const desc = b.desc[currentLang] || b.desc.en;
-    const waLink = b.whatsapp ? `https://wa.me/${b.whatsapp.replace(/[^0-9]/g, '')}` : null;
     return `
       <article class="plaque" onclick="location.href='profile.html?id=${b.id}'">
         ${businessAvatarHtml(b, name)}
         <span class="cat-tag">${categoryIcon(b.category)}${catLabel(b.category)}</span>
         <h3>${escapeHtml(name)}</h3>
         <div class="neigh">📍 ${escapeHtml(b.neighborhood)}${b.neighborhood ? ', ' : ''}${escapeHtml(cityLabel(b.city))}</div>
-        <p class="desc">${escapeHtml(desc)}</p>
-        <div class="actions">
-          ${b.phone ? `<a class="call" href="tel:${b.phone}" onclick="event.stopPropagation()">${ICONS.phone}${t('call')}</a>` : ''}
-          ${waLink ? `<a class="whatsapp" href="${waLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.whatsapp}${t('whatsapp')}</a>` : ''}
-          ${b.instagram ? `<a class="social" href="${b.instagram}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.instagram}Instagram</a>` : ''}
-          ${b.facebook ? `<a class="social" href="${b.facebook}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.facebook}Facebook</a>` : ''}
-        </div>
         <div class="scans">📶 ${b.scans || 0} ${t('scans')}</div>
+        <div class="view-profile-strip">
+          <span>${t('viewProfile')}</span>
+          <span class="vp-arrow">${ICONS.chevronRight}</span>
+        </div>
       </article>
     `;
   }).join('');
@@ -399,7 +397,8 @@ const ICONS = {
   instagram: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>',
   facebook: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>',
   pin: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-  directions: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>'
+  directions: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>',
+  chevronRight: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>'
 };
 
 // One consistent icon per category, used on filter pills and card tags

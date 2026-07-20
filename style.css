@@ -364,6 +364,39 @@ body[dir="rtl"] .plaque h3 { font-family: var(--font-ar-display); font-weight: 7
   padding-top: 8px;
 }
 
+.view-profile-strip {
+  margin: 4px -18px -18px -18px;
+  padding: 11px 18px;
+  background: var(--sage);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 0 0 var(--radius) var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.vp-arrow {
+  display: inline-flex;
+  animation: vpNudge 2.6s ease-in-out infinite;
+}
+
+@keyframes vpNudge {
+  0%, 75%, 100% { transform: translateX(0); }
+  87% { transform: translateX(4px); }
+}
+
+body[dir="rtl"] .vp-arrow {
+  animation-name: vpNudgeRtl;
+}
+
+@keyframes vpNudgeRtl {
+  0%, 75%, 100% { transform: scaleX(-1) translateX(0); }
+  87% { transform: scaleX(-1) translateX(4px); }
+}
+
 .actions {
   display: flex;
   gap: 8px;
