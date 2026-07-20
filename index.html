@@ -43,6 +43,13 @@
     </div>
   </section>
 
+  <section class="featured-section" id="featuredSection" style="display:none;">
+    <div class="wrap">
+      <div class="filter-label" data-i18n="featuredLabel">Featured Near You</div>
+      <div class="stories-row" id="storiesRow"></div>
+    </div>
+  </section>
+
   <section class="grid-section">
     <div class="wrap">
       <div class="result-count" id="resultCount"></div>
@@ -53,6 +60,23 @@
   <footer class="site-footer">
     <div class="wrap" data-i18n="footer">DERÎ — a directory built from doorstep leaflets.</div>
   </footer>
+
+  <div id="storyViewerOverlay" class="story-viewer-overlay" style="display:none;" onclick="if(event.target===this) closeStoryViewer()">
+    <div class="story-viewer">
+      <div class="story-progress" id="storyProgress"></div>
+      <div class="story-header">
+        <span id="storyBizName"></span>
+        <button class="story-close" onclick="closeStoryViewer()">✕</button>
+      </div>
+      <div class="story-image-wrap">
+        <img id="storyImage" src="" alt="">
+        <div class="story-image-fallback" id="storyImageFallback"></div>
+        <div class="story-tap-zone story-tap-left" onclick="storyPrev()"></div>
+        <div class="story-tap-zone story-tap-right" onclick="storyNext()"></div>
+      </div>
+      <a id="storyViewProfileBtn" class="story-view-profile" href="#">View Full Profile →</a>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>

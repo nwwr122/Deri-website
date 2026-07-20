@@ -37,6 +37,77 @@ function renderDiscoveryBanner() {
   `;
 }
 
+// ---- Profile page photo slideshow ----
+let slideImages = [];
+let slideIndex = 0;
+let slideTimer = null;
+const SLIDE_INTERVAL_MS = 4000;
+
+function buildSlideshowHtml(biz, name) {
+  const gallery = parseGalleryUrls(biz.galleryUrls);
+  if (gallery.length === 0) {
+    slideImages = [];
+    return businessAvatarHtml(biz, name).replace('plaque-avatar', 'plaque-avatar profile-avatar');
+  }
+  slideImages = gallery;
+  slideIndex = 0;
+
+  const slidesHtml = gallery.map((url, i) =>
+    `<img class="slide${i === 0 ? ' active' : ''}" src="${escapeHtml(url)}" alt="${escapeHtml(name)}">`
+  ).join('');
+
+  const dotsHtml = gallery.length > 1 ? gallery.map((_, i) =>
+    `<span class="slide-dot${i === 0 ? ' active' : ''}" onclick="event.stopPropagation(); goToSlide(${i})"></span>`
+  ).join('') : '';
+
+  const navHtml = gallery.length > 1 ? `
+    <button class="slide-nav prev" onclick="event.stopPropagation(); slidePrev()" aria-label="Previous photo">‹</button>
+    <button class="slide-nav next" onclick="event.stopPropagation(); slideNext()" aria-label="Next photo">›</button>
+  ` : '';
+
+  return `
+    <div class="profile-slideshow" id="profileSlideshow">
+      <div class="slideshow-frame">${slidesHtml}</div>
+      ${navHtml}
+      ${gallery.length > 1 ? `<div class="slide-dots">${dotsHtml}</div>` : ''}
+    </div>
+  `;
+}
+
+function showSlide(i) {
+  const frame = document.querySelector('#profileSlideshow .slideshow-frame');
+  if (!frame) return;
+  frame.querySelectorAll('.slide').forEach((s, idx) => s.classList.toggle('active', idx === i));
+  document.querySelectorAll('#profileSlideshow .slide-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
+  slideIndex = i;
+}
+
+function slideNext() {
+  if (slideImages.length === 0) return;
+  showSlide((slideIndex + 1) % slideImages.length);
+  startSlideTimer();
+}
+
+function slidePrev() {
+  if (slideImages.length === 0) return;
+  showSlide((slideIndex - 1 + slideImages.length) % slideImages.length);
+  startSlideTimer();
+}
+
+function goToSlide(i) {
+  showSlide(i);
+  startSlideTimer();
+}
+
+function startSlideTimer() {
+  if (slideTimer) clearInterval(slideTimer);
+  slideTimer = null;
+  if (slideImages.length <= 1) return;
+  slideTimer = setInterval(() => {
+    showSlide((slideIndex + 1) % slideImages.length);
+  }, SLIDE_INTERVAL_MS);
+}
+
 function renderProfilePage() {
   renderDiscoveryBanner();
   const container = document.getElementById('profileContainer');
@@ -59,7 +130,7 @@ function renderProfilePage() {
 
   container.innerHTML = `
     <div class="profile-card">
-      ${businessAvatarHtml(biz, name).replace('plaque-avatar', 'plaque-avatar profile-avatar')}
+      ${buildSlideshowHtml(biz, name)}
       <span class="cat-tag">${categoryIcon(biz.category)}${catLabel(biz.category)}</span>
       <h1 class="profile-name">${escapeHtml(name)}</h1>
       <div class="neigh">📍 ${escapeHtml(biz.neighborhood)}${biz.neighborhood ? ', ' : ''}${escapeHtml(cityLabel(biz.city))}</div>
@@ -84,6 +155,8 @@ function renderProfilePage() {
       <div class="scans">📶 ${biz.scans || 0} ${t('scans')}</div>
     </div>
   `;
+
+  startSlideTimer();
 }
 
 // Called once by app.js's central bootstrap, after STORE.fetchAll()

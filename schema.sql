@@ -21,6 +21,8 @@ create table if not exists businesses (
   scans integer default 0,
   image_url text,
   map_location text,
+  gallery_urls text,
+  city text default 'duhok',
   name_en text,
   name_ku text,
   name_ar text,

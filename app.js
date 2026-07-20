@@ -28,6 +28,7 @@ function rowToBusiness(row) {
     scans: row.scans || 0,
     imageUrl: row.image_url || '',
     mapLocation: row.map_location || '',
+    galleryUrls: row.gallery_urls || '',
     city: row.city || 'duhok',
     name: { en: row.name_en || '', ku: row.name_ku || '', ar: row.name_ar || '' },
     desc: { en: row.desc_en || '', ku: row.desc_ku || '', ar: row.desc_ar || '' }
@@ -46,6 +47,7 @@ function businessToRow(b) {
     scans: b.scans,
     image_url: b.imageUrl,
     map_location: b.mapLocation,
+    gallery_urls: b.galleryUrls,
     city: b.city,
     name_en: b.name.en,
     name_ku: b.name.ku,
@@ -144,6 +146,7 @@ const STRINGS = {
     discoveryText: 'DERÎ lists real local businesses near you — not just this one.',
     discoveryCta: 'Explore more businesses',
     viewProfile: 'View Full Profile',
+    featuredLabel: 'Featured Near You',
     footer: 'DERÎ — a directory built from doorstep leaflets.'
   },
   ku: {
@@ -162,6 +165,7 @@ const STRINGS = {
     discoveryText: 'DERÎ کاروبارێن راستین ێن هەرێمی نێزیکی تە تۆمار دکەت — نە تنێ ئەڤێ.',
     discoveryCta: 'گەڕان بۆ کاروبارێن دی',
     viewProfile: 'پرۆفایلا تەواو ببینە',
+    featuredLabel: 'پێشکەشکری نێزیکی تە',
     footer: 'DERÎ — بەڕێڤەبەرا کاروباران یا دروستکری ژ بەڵاوکێن دەرگەهان.'
   },
   ar: {
@@ -180,6 +184,7 @@ const STRINGS = {
     discoveryText: 'دليل DERÎ يضم أعمالاً محلية حقيقية بالقرب منك — وليس هذا العمل فقط.',
     discoveryCta: 'استكشف المزيد من الأعمال',
     viewProfile: 'عرض الملف الكامل',
+    featuredLabel: 'مميز بالقرب منك',
     footer: 'DERÎ — دليل مبني من منشورات الأبواب.'
   }
 };
@@ -315,7 +320,8 @@ function renderStaticStrings() {
     footer: '[data-i18n="footer"]',
     areaFilterLabel: '[data-i18n="areaFilterLabel"]',
     categoryFilterLabel: '[data-i18n="categoryFilterLabel"]',
-    backToAll: '[data-i18n="backToAll"]'
+    backToAll: '[data-i18n="backToAll"]',
+    featuredLabel: '[data-i18n="featuredLabel"]'
   };
   Object.entries(map).forEach(([key, sel]) => {
     const el = document.querySelector(sel);
@@ -331,6 +337,7 @@ function renderPublicPage() {
   renderCategoryStrip();
   renderCityStrip();
   renderBusinessGrid();
+  renderStoriesRow();
 }
 
 // Tries to pull "lat,lng" out of a pasted Google Maps URL, in whatever
@@ -420,6 +427,35 @@ function categoryIcon(catId) {
   return CATEGORY_ICONS[catId] || CATEGORY_ICONS.other;
 }
 
+// Splits the admin's pasted gallery text (one URL per line, or comma-
+// separated, or a mix of both) into a clean array of real URLs.
+function parseGalleryUrls(raw) {
+  if (!raw) return [];
+  return raw
+    .split(/[\n,]+/)
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
+// Resolves the set of images a "story" should cycle through for a
+// business: its gallery if it has one, otherwise its single card photo,
+// otherwise nothing (the viewer falls back to a big letter avatar).
+function storyImagesFor(biz) {
+  const gallery = parseGalleryUrls(biz.galleryUrls);
+  if (gallery.length) return gallery;
+  if (biz.imageUrl) return [biz.imageUrl];
+  return [];
+}
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function businessAvatarHtml(business, displayName) {
   if (business.imageUrl) {
     return `<img class="plaque-avatar" src="${escapeHtml(business.imageUrl)}" alt="${escapeHtml(displayName)}" onerror="this.replaceWith(Object.assign(document.createElement('div'), {className:'plaque-avatar plaque-avatar-fallback', textContent:'${escapeHtml((displayName || '?').charAt(0).toUpperCase())}'}))">`;
@@ -434,6 +470,161 @@ function escapeHtml(str) {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   })[s]);
 }
+
+// =========================================================
+// "Featured Near You" stories row + full-screen story viewer
+// =========================================================
+
+let featuredIds = null;      // cached random pick, so it doesn't reshuffle on every render
+let featuredForCity = null;  // which city that cached pick was made for
+
+let storyBusinessIds = [];
+let storyBizIndex = 0;
+let storyImages = [];
+let storyImgIndex = 0;
+let storyTimer = null;
+const STORY_INTERVAL_MS = 3500;
+
+function renderStoriesRow() {
+  const row = document.getElementById('storiesRow');
+  const section = document.getElementById('featuredSection');
+  if (!row || !section) return;
+
+  const all = STORE.getCached();
+  const pool = all.filter(b => activeCity === 'all' || b.city === activeCity);
+
+  // Only reshuffle when the city filter actually changes — keeps the same
+  // random set stable across language switches or re-renders.
+  if (featuredForCity !== activeCity || !featuredIds) {
+    featuredForCity = activeCity;
+    featuredIds = shuffleArray(pool.map(b => b.id)).slice(0, 10);
+  }
+
+  const featured = featuredIds.map(id => pool.find(b => b.id === id)).filter(Boolean);
+  storyBusinessIds = featured.map(b => b.id);
+
+  if (featured.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = '';
+
+  row.innerHTML = featured.map((b, i) => {
+    const name = b.name[currentLang] || b.name.en;
+    const images = storyImagesFor(b);
+    const thumbUrl = images[0] || '';
+    const ringInner = thumbUrl
+      ? `<img src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(name)}">`
+      : `<div class="story-letter">${escapeHtml((name || '?').charAt(0).toUpperCase())}</div>`;
+    return `
+      <button class="story-circle" onclick="openStoryViewer(${i})">
+        <span class="story-ring">${ringInner}</span>
+        <span class="story-name">${escapeHtml(name)}</span>
+      </button>
+    `;
+  }).join('');
+}
+
+function openStoryViewer(indexInFeatured) {
+  storyBizIndex = indexInFeatured;
+  loadStoryForCurrentBusiness();
+  document.getElementById('storyViewerOverlay').style.display = 'flex';
+}
+
+function closeStoryViewer() {
+  clearTimeout(storyTimer);
+  document.getElementById('storyViewerOverlay').style.display = 'none';
+}
+
+function loadStoryForCurrentBusiness() {
+  const id = storyBusinessIds[storyBizIndex];
+  const biz = STORE.getCached().find(b => b.id === id);
+  if (!biz) { closeStoryViewer(); return; }
+
+  storyImages = storyImagesFor(biz);
+  storyImgIndex = 0;
+
+  const name = biz.name[currentLang] || biz.name.en;
+  document.getElementById('storyBizName').textContent = name;
+  const cta = document.getElementById('storyViewProfileBtn');
+  cta.href = `profile.html?id=${biz.id}`;
+  cta.textContent = t('viewProfile') + ' →';
+
+  buildStoryProgressBars();
+  renderStoryImage();
+  startStoryTimer();
+}
+
+function buildStoryProgressBars() {
+  const wrap = document.getElementById('storyProgress');
+  wrap.innerHTML = storyImages.map(() =>
+    `<div class="story-progress-seg"><div class="story-progress-fill"></div></div>`
+  ).join('');
+}
+
+function updateStoryProgressClasses() {
+  document.querySelectorAll('.story-progress-fill').forEach((el, i) => {
+    el.classList.remove('filled', 'active');
+    if (i < storyImgIndex) el.classList.add('filled');
+    if (i === storyImgIndex) el.classList.add('active');
+  });
+}
+
+function renderStoryImage() {
+  const imgEl = document.getElementById('storyImage');
+  const fallbackEl = document.getElementById('storyImageFallback');
+  if (storyImages.length === 0) {
+    imgEl.style.display = 'none';
+    fallbackEl.style.display = 'flex';
+    const id = storyBusinessIds[storyBizIndex];
+    const biz = STORE.getCached().find(b => b.id === id);
+    const name = biz ? (biz.name[currentLang] || biz.name.en) : '?';
+    fallbackEl.textContent = (name || '?').charAt(0).toUpperCase();
+  } else {
+    imgEl.style.display = 'block';
+    fallbackEl.style.display = 'none';
+    imgEl.src = storyImages[storyImgIndex];
+  }
+  updateStoryProgressClasses();
+}
+
+function startStoryTimer() {
+  clearTimeout(storyTimer);
+  storyTimer = setTimeout(storyNext, STORY_INTERVAL_MS);
+}
+
+function storyNext() {
+  if (storyImgIndex < storyImages.length - 1) {
+    storyImgIndex++;
+    renderStoryImage();
+    startStoryTimer();
+  } else if (storyBizIndex < storyBusinessIds.length - 1) {
+    storyBizIndex++;
+    loadStoryForCurrentBusiness();
+  } else {
+    closeStoryViewer();
+  }
+}
+
+function storyPrev() {
+  if (storyImgIndex > 0) {
+    storyImgIndex--;
+    renderStoryImage();
+    startStoryTimer();
+  } else if (storyBizIndex > 0) {
+    storyBizIndex--;
+    loadStoryForCurrentBusiness();
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  const overlay = document.getElementById('storyViewerOverlay');
+  if (!overlay || overlay.style.display !== 'flex') return;
+  if (e.key === 'Escape') closeStoryViewer();
+  if (e.key === 'ArrowRight') storyNext();
+  if (e.key === 'ArrowLeft') storyPrev();
+});
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Apply the visitor's saved language choice (or the Badini default)
